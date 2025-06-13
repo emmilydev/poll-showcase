@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>dev.emmily</groupId>
+  <artifactId>poll-showcase</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <properties>
+    <maven.compiler.source>24</maven.compiler.source>
+    <maven.compiler.target>24</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <sigma.version>2.0.0-SNAPSHOT</sigma.version>
+  </properties>
+
+  <build>
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
+
+  <repositories>
+    <repository>
+      <id>papermc</id>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
+    </repository>
+    <repository>
+      <id>unnamed-public</id>
+      <url>https://repo.unnamed.team/repository/unnamed-public/</url>
+    </repository>
+    <repository>
+      <id>codemc-snapshots</id>
+      <url>https://repo.codemc.io/repository/maven-snapshots/</url>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>io.papermc.paper</groupId>
+      <artifactId>paper-api</artifactId>
+      <version>1.21.5-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>me.fixeddev</groupId>
+      <artifactId>commandflow-universal</artifactId>
+      <version>0.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>me.fixeddev</groupId>
+      <artifactId>commandflow-bukkit</artifactId>
+      <version>0.6.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.incendo.interfaces</groupId>
+      <artifactId>interfaces-paper</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>me.yushust.message</groupId>
+      <artifactId>core</artifactId>
+      <version>7.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>me.yushust.message</groupId>
+      <artifactId>sourcetype-bukkit-yml</artifactId>
+      <version>7.2.2</version>
+    </dependency>
+    <dependency>
+      <groupId>net.wesjd</groupId>
+      <artifactId>anvilgui</artifactId>
+      <version>1.10.5-SNAPSHOT</version>
+    </dependency>
+    <!-->
+    The following dependencies are not available in any repository,
+    must be manually installed to the local repository in order to
+    compile the project
+    <!-->
+    <dependency>
+      <groupId>dev.emmily</groupId>
+      <artifactId>sigma-api</artifactId>
+      <version>${sigma.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.emmily</groupId>
+      <artifactId>sigma-codec-gson</artifactId>
+      <version>${sigma.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.emmily</groupId>
+      <artifactId>sigma-platform-mongo</artifactId>
+      <version>${sigma.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
