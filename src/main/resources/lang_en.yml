@@ -1,6 +1,6 @@
 word:
-  yes: '<#a8dadc>Yes</#a8dadc>'
-  no: '<#e5989b>No</#e5989b>'
+  yes: '<#43aa8b>Yes</#43aa8b>'
+  no: '<#f94144>No</#f94144>'
   second:
     single: ' second '
     plural: ' seconds '
@@ -30,59 +30,59 @@ word:
     plural: ' years '
     short: 'y '
 poll:
-  invalid-date: '<#e5989b>⚠ Invalid date format provided.</#e5989b>'
-  empty: '<#f4a261>⚠ The poll content is empty. Skipping.</#f4a261>'
-  created: '<#a8dadc>✔ Poll successfully created.</#a8dadc>'
-  opened: '<#a8dadc>✔ A new poll has been created! Question: <#f7ede2>%poll_question%</#f7ede2>.</#a8dadc>'
-  already-ended: '<#f6bd60>⚠ Poll <#f7ede2>%poll_id%</#f7ede2> has already ended.</#f6bd60>'
-  already-voted: '<#e5989b>⚠ You have already voted in this poll.</#e5989b>'
-  already-exists: '<#e5989b>⚠ The poll <#f7ede2>%poll%</#f7ede2> already exists.</#e5989b>'
-  voted: 'You voted in the poll %poll_question%. Selected option: %option%'
-  ended: '<#a8dadc>✔ Poll <#f7ede2>%poll_id%</#f7ede2> has ended. Total votes: %poll_votes%</#a8dadc> <reset>%poll_results%'
-  results-format: '<#bcb8b1>%option%</#bcb8b1> <#d6ccc2>%votes%</#d6ccc2> (%percentage%%)'
+  invalid-date: '<#f94144>⚠ Invalid date format provided.</#f94144>'
+  empty: '<#f9844a>⚠ The poll content is empty. Skipping.</#f9844a>'
+  created: '<#43aa8b>✔ Poll successfully created.</#43aa8b>'
+  opened: '<#43aa8b>✔ A new poll has been created! Question: <#f9c74f>%poll_question%</#f9c74f>.</#43aa8b>'
+  already-ended: '<#f8961e>⚠ Poll <#f9c74f>%poll_id%</#f9c74f> has already ended.</#f8961e>'
+  already-voted: '<#f94144>⚠ You have already voted in this poll.</#f94144>'
+  already-exists: '<#f94144>⚠ The poll <#f9c74f>%poll%</#f9c74f> already exists.</#f94144>'
+  voted: '<#277da1>You voted in the poll <#f9c74f>%poll_question%</#f9c74f>. Selected option: <#577590>%option%</#577590></#277da1>'
+  ended: '<#43aa8b>✔ Poll <#f9c74f>%poll_id%</#f9c74f> has ended. Total votes: <#90be6d>%poll_votes%</#90be6d></#43aa8b> <reset>%poll_results%'
+  results-format: '<#577590>%option%</#577590> <#adb5bd>%votes%</#adb5bd> (%percentage%%)'
 menu:
   poll-admin:
-    title: '<bold><#99c1b9>Poll Admin - %poll_question%</#99c1b9></bold>'
-    default-value: '<#e5989b>Empty</#e5989b>'
+    title: '<#277da1>Poll Admin - %poll_question%</#277da1>'
+    default-value: '<#f94144>Empty</#f94144>'
     item:
       option:
-        name: 'Option: <bold><#f7ede2>%option%</#f7ede2></bold>'
+        name: 'Option: <#f9c74f>%option%</#f9c74f>'
         lore:
           - ''
-          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to edit</#d6ccc2></underlined>'
+          - '<#43aa8b>Click to edit</#43aa8b>'
           - ''
       confirm:
-        name: '<bold><#a8dadc>✔ Confirm</#a8dadc></bold>'
+        name: '<#43aa8b>✔ Confirm</#43aa8b>'
         lore:
           - ''
-          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to confirm</#d6ccc2></underlined>'
+          - '<#43aa8b>Click to confirm</#43aa8b>'
           - ''
       cancel:
-        name: '<bold><#e5989b>✖ Cancel</#e5989b></bold>'
+        name: '<#f94144>✖ Cancel</#f94144>'
         lore:
           - ''
-          - '<#e5989b>Click</#e5989b> <underlined><#d6ccc2>to cancel</#d6ccc2></underlined>'
+          - '<#f94144>Click to cancel</#f94144>'
           - ''
   polls:
-    title: '<bold><#99c1b9>Polls</#99c1b9></bold>'
+    title: '<#277da1>Polls</#277da1>'
     item:
       poll:
-        name: '<bold><#f7ede2>Poll - %poll_question%</#f7ede2></bold>'
+        name: '<#f9c74f>Poll - %poll_question%</#f9c74f>'
         lore:
           - ''
-          - '<#d6ccc2>Open:</#d6ccc2> <#a8dadc>%poll_open%</#a8dadc>'
-          - '<#d6ccc2>Expire date:</#d6ccc2> <#f4a261>%poll_expire_date%</#f4a261>'
-          - '<#d6ccc2>Creation date:</#d6ccc2> <#f6bd60>%poll_creation_date%</#f6bd60>'
-          - '<#d6ccc2>You voted:</#d6ccc2> %poll_player_voted%'
+          - '<#adb5bd>Open:</#adb5bd> <#43aa8b>%poll_open%</#43aa8b>'
+          - '<#adb5bd>Expire date:</#adb5bd> <#f9844a>%poll_expire_date%</#f9844a>'
+          - '<#adb5bd>Creation date:</#adb5bd> <#f8961e>%poll_creation_date%</#f8961e>'
+          - '<#adb5bd>You voted:</#adb5bd> <#577590>%poll_player_voted%</#577590>'
           - ''
-          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to vote</#d6ccc2></underlined>'
+          - '<#43aa8b>Click to vote</#43aa8b>'
           - ''
   poll-vote:
-    title: '<bold><#99c1b9>Poll vote - %poll_id%</#99c1b9></bold>'
+    title: '<#277da1>Poll vote - %poll_id%</#277da1>'
     item:
       option:
-        name: '<bold><#f7ede2>%option%</#f7ede2></bold>'
+        name: '<#f9c74f>%option%</#f9c74f>'
         lore:
           - ''
-          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to vote for this option</#d6ccc2></underlined>'
+          - '<#43aa8b>Click to vote for this option</#43aa8b>'
           - ''
