@@ -88,7 +88,7 @@ public class PollService implements Iterable<Poll> {
     registerPoll(poll, true);
   }
 
-  public boolean vote(Poll poll, int option, Player player) {
+  public boolean vote(Poll poll, int optionIndex, Player player) {
     if (poll.hasExpired()) {
       messageHandler.send(player, "poll.already-ended", poll);
       return false;
@@ -100,12 +100,20 @@ public class PollService implements Iterable<Poll> {
     }
 
     var options = poll.options();
-    if (!options.containsKey(option)) {
+    if (!options.containsKey(optionIndex)) {
       return false;
     }
 
-    options.get(option).addVote();
+    Poll.Option option = options.get(optionIndex);
+    option.addVote();
     poll.voters().add(player.getUniqueId());
+
+    messageHandler.dispatch(
+      player, "poll.voted", MessageMode.INFO,
+      ReplacePack.make("%option%", option.value()),
+      poll
+    );
+
     return true;
   }
 
@@ -122,7 +130,11 @@ public class PollService implements Iterable<Poll> {
       }
     });
 
-    messageHandler.sendIn(Bukkit.getOnlinePlayers(), MessageMode.INFO, "poll.ended", poll);
+    messageHandler.sendIn(
+      Bukkit.getOnlinePlayers(), MessageMode.INFO,
+      "poll.ended", poll
+    );
+
     return true;
   }
 
@@ -132,7 +144,7 @@ public class PollService implements Iterable<Poll> {
   }
 
   public List<String> getFormattedResults(Poll poll, Player viewer) {
-    if (poll.closed()) {
+    if (!poll.closed()) {
       return null;
     }
 

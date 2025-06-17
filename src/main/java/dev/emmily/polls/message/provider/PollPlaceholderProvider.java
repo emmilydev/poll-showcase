@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.StringJoiner;
 import java.util.UUID;
 
@@ -46,10 +47,18 @@ public class PollPlaceholderProvider
       case "votes" -> poll.totalVoters();
       case "creation_date" -> timeFormatter.format(context.getEntity(), poll.creationDate());
       case "expire_date" -> timeFormatter.format(context.getEntity(), poll.expireDate());
-      case "expired" -> "%path_word." + (poll.hasExpired() ? "yes" : "no");
-      case "open" -> "%path_word." + (poll.hasExpired() ? "no" : "yes");
-      case "player_voted" -> !poll.canVote(player);
-      case "results" -> "\n" + String.join("\n", pollService.getFormattedResults(poll, player));
+      case "expired" -> "%path_word." + (poll.hasExpired() ? "yes" : "no") + "%";
+      case "open" -> "%path_word." + (poll.hasExpired() ? "no" : "yes") + "%";
+      case "player_voted" -> "%path_word." + (poll.canVote(player) ? "no" : "yes") + "%";
+      case "results" -> {
+        List<String> formattedResults = pollService.getFormattedResults(poll, player);
+
+        if (formattedResults == null) {
+          yield null;
+        }
+
+        yield "\n" + formattedResults;
+      }
       default -> null;
     };
   }

@@ -54,7 +54,8 @@ public class PollVoteMenu extends AbstractChestMenu {
           ItemStackElement<ChestPane> element = ItemStackElement.of(
             item(
               player, "option",
-              ReplacePack.make("%option%", option)
+              ReplacePack.make("%option%", option),
+              poll
             )
               .type(Material.PAPER)
               .amount(1)

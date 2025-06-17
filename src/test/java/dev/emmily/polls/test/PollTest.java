@@ -59,8 +59,6 @@ public class PollTest {
 
     assertEquals(1, poll.options().get(0).votes());
     assertTrue(poll.voters().contains(playerId));
-
-    assertTrue(capturedMessages.isEmpty());
   }
 
   @Test

@@ -33,10 +33,11 @@ poll:
   invalid-date: '<#e5989b>⚠ Invalid date format provided.</#e5989b>'
   empty: '<#f4a261>⚠ The poll content is empty. Skipping.</#f4a261>'
   created: '<#a8dadc>✔ Poll successfully created.</#a8dadc>'
-  opened: '<#a8dadc>✔ A new poll has been created! Question: <#f7ede2>%poll_question%</#f7ede2></#a8dadc>.'
+  opened: '<#a8dadc>✔ A new poll has been created! Question: <#f7ede2>%poll_question%</#f7ede2>.</#a8dadc>'
   already-ended: '<#f6bd60>⚠ Poll <#f7ede2>%poll_id%</#f7ede2> has already ended.</#f6bd60>'
   already-voted: '<#e5989b>⚠ You have already voted in this poll.</#e5989b>'
   already-exists: '<#e5989b>⚠ The poll <#f7ede2>%poll%</#f7ede2> already exists.</#e5989b>'
+  voted: 'You voted in the poll %poll_question%. Selected option: %option%'
   ended: '<#a8dadc>✔ Poll <#f7ede2>%poll_id%</#f7ede2> has ended. Total votes: %poll_votes%</#a8dadc> <reset>%poll_results%'
   results-format: '<#bcb8b1>%option%</#bcb8b1> <#d6ccc2>%votes%</#d6ccc2> (%percentage%%)'
 menu:

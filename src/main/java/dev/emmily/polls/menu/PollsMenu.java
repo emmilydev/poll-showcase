@@ -1,5 +1,6 @@
 package dev.emmily.polls.menu;
 
+import dev.emmily.polls.message.MessageMode;
 import dev.emmily.polls.poll.PollService;
 import dev.emmily.polls.util.time.TimeFormatter;
 import me.yushust.message.MessageHandler;
@@ -21,21 +22,20 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class PollsMenu extends AbstractChestMenu {
+  private final MessageHandler messageHandler;
   private final PollService pollService;
   private final PollVoteMenu pollVoteMenu;
-  private final TimeFormatter timeFormatter;
 
   @Inject
   public PollsMenu(
     MessageHandler messageHandler,
     PollService pollService,
-    PollVoteMenu pollVoteMenu,
-    TimeFormatter timeFormatter
+    PollVoteMenu pollVoteMenu
   ) {
     super("polls", messageHandler);
     this.pollService = pollService;
     this.pollVoteMenu = pollVoteMenu;
-    this.timeFormatter = timeFormatter;
+    this.messageHandler = messageHandler;
   }
 
   public void open(Player player) {
@@ -51,7 +51,12 @@ public class PollsMenu extends AbstractChestMenu {
           .build(),
         context -> {
           context.status(ClickContext.ClickStatus.DENY);
-          pollVoteMenu.open(player, poll);
+
+          if (poll.canVote(player)) {
+            pollVoteMenu.open(player, poll);
+          } else {
+            messageHandler.sendIn(player, MessageMode.ERROR, "poll.already-voted");
+          }
         }
       ))
       .toList();
