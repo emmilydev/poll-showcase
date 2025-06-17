@@ -45,9 +45,13 @@ public class PollPlaceholderProvider
         yield joiner.toString();
       }
       case "votes" -> poll.totalVoters();
-      case "creation_date" -> timeFormatter.format(context.getEntity(), poll.creationDate());
-      case "expire_date" -> timeFormatter.format(context.getEntity(), poll.expireDate() - System.currentTimeMillis());
-      case "expired" -> "%path_word." + (poll.hasExpired() ? "yes" : "no") + "%";
+      case "creation_date" -> timeFormatter.format(
+        context.getEntity(),
+        System.currentTimeMillis() - poll.creationDate());
+      case "expire_date" -> timeFormatter.format(
+        context.getEntity(),
+        poll.expireDate() - System.currentTimeMillis());
+      case "expired" -> context.get(player, "word." + (poll.hasExpired() ? "yes" : "no"));
       case "open" -> context.get(player, "word." + (poll.hasExpired() ? "no" : "yes"));
       case "player_voted" -> context.get(player, "word." + (poll.canVote(player) ? "no" : "yes"));
       case "results" -> {
