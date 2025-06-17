@@ -1,0 +1,14 @@
+storage:
+  type: 'mongo' # valid values: json, mongo
+  credentials:
+    uri: 'mongodb://localhost:27017'
+    host: 'localhost'
+    port: 27017
+    database: 'polls'
+    username: 'user'
+    password: 'admin'
+sound:
+  click: 'minecraft:ui.button.click 1.0 1.0'
+  info: 'minecraft:block.note_block.pling 1.0 1.0'
+  warning: 'minecraft:block.note_block.pling 1.0 0.75'
+  error: 'minecraft:block.note_block.pling 1.0 0.5'

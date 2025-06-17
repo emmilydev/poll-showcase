@@ -1,0 +1,5 @@
+name: 'poll-showcase'
+version: '${project.version}'
+main: 'dev.emmily.polls.PollsPlugin'
+api-version: '1.21.4'
+author: 'emmilydev'
