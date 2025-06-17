@@ -92,6 +92,7 @@ public class PollsMenu extends AbstractChestMenu {
       .clickHandler(ClickHandler.cancel())
       .rows(6)
       .addTransform(transform)
+      .updates(true, 20)
       .build();
 
     menu.open(PlayerViewer.of(player));

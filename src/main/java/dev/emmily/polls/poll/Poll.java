@@ -205,6 +205,5 @@ public final class Poll implements Model {
     public int hashCode() {
       return index;
     }
-
   }
 }
