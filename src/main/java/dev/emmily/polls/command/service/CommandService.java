@@ -12,10 +12,13 @@ import me.fixeddev.commandflow.bukkit.BukkitAuthorizer;
 import me.fixeddev.commandflow.bukkit.BukkitCommandManager;
 import me.fixeddev.commandflow.bukkit.factory.BukkitModule;
 
+import javax.inject.Inject;
+
 public class CommandService {
   private final PollPart pollPart;
   private final PollCommand pollCommand;
 
+  @Inject
   public CommandService(PollPart pollPart, PollCommand pollCommand) {
     this.pollPart = pollPart;
     this.pollCommand = pollCommand;

@@ -1,10 +1,14 @@
 package dev.emmily.polls.poll;
 
+import com.google.common.base.Strings;
 import dev.emmily.polls.PollsPlugin;
+import dev.emmily.polls.message.MessageMode;
 import dev.emmily.polls.message.Messages;
+import dev.emmily.polls.message.provider.PollPlaceholderProvider;
+import dev.emmily.polls.util.time.TimeFormatter;
 import dev.emmily.sigma.api.repository.CachedAsyncModelRepository;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import me.yushust.message.MessageHandler;
+import me.yushust.message.util.ReplacePack;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -13,93 +17,164 @@ import org.jetbrains.annotations.NotNull;
 import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
 
-public class PollService
-  implements Iterable<Poll> {
+public class PollService implements Iterable<Poll> {
   private final PollsPlugin plugin;
-  private final MessageHandler messageHandler;
   private final CachedAsyncModelRepository<Poll> pollRepository;
+  private final MessageHandler messageHandler;
 
   @Inject
-  public PollService(MessageHandler messageHandler, PollsPlugin plugin,
-                     CachedAsyncModelRepository<Poll> pollRepository) {
-    this.messageHandler = messageHandler;
+  public PollService(
+    PollsPlugin plugin,
+    CachedAsyncModelRepository<Poll> pollRepository,
+    TimeFormatter timeFormatter,
+    MessageHandler messageHandler
+  ) {
     this.plugin = plugin;
     this.pollRepository = pollRepository;
+    this.messageHandler = messageHandler;
+
+    messageHandler
+      .getConfig()
+      .specify(Poll.class)
+      .addProvider("poll", new PollPlaceholderProvider(this, timeFormatter));
   }
 
-  public boolean expire(Poll poll) {
-    if (!poll.closed() || poll.expireDate() < System.currentTimeMillis()) {
+  public void loadAll() {
+    pollRepository.findAllAsync().whenComplete((polls, error) -> {
+      if (error != null) {
+        plugin.getLogger().log(Level.SEVERE, "Unable to load polls", error);
+        return;
+      }
+
+      for (Poll poll : polls) {
+        if (poll.hasExpired()) {
+          pollRepository.delete(poll);
+          continue;
+        }
+
+        registerPoll(poll, false);
+      }
+    });
+  }
+
+  public void saveAll() {
+    pollRepository.getAllAsync().whenComplete((polls, error) -> {
+      if (error != null) {
+        plugin.getLogger().log(Level.SEVERE, "Unable to save polls", error);
+        return;
+      }
+
+      for (Poll poll : polls) {
+        if (!poll.hasExpired()) {
+          pollRepository.create(poll);
+        }
+      }
+    });
+  }
+
+  public void registerPoll(Poll poll, boolean announce) {
+    if (announce) {
+      messageHandler.send(Bukkit.getOnlinePlayers(), "poll.opened", poll);
+    }
+
+    pollRepository.cache(poll);
+    scheduleExpiration(poll);
+  }
+
+  public void registerPoll(Poll poll) {
+    registerPoll(poll, true);
+  }
+
+  public boolean vote(Poll poll, int option, Player player) {
+    if (poll.hasExpired()) {
+      messageHandler.send(player, "poll.already-ended", poll);
       return false;
     }
 
-    Object2IntMap<String> options = poll.options();
-    int totalVotes = options.values().intStream().sum();
-
-    List<String> results = options
-      .object2IntEntrySet()
-      .stream()
-      .sorted((e1, e2) -> Integer.compare(e2.getIntValue(), e1.getIntValue()))
-      .map(entry -> {
-        int votes = entry.getIntValue();
-        float percentage = totalVotes == 0
-          ? 0f
-          : (float) (votes * 100) / totalVotes;
-
-        return entry.getKey() + ": " + votes + "(" + String.format("%.2f", percentage) + "%)"; // hardcoded lol
-      })
-      .toList();
-
-    for (Player player : Bukkit.getOnlinePlayers()) {
-      List<Component> message = Messages.fromList(Messages.replace(messageHandler.getMany(
-        player, "poll.ended"
-      ), "%results%", () -> results));
-
-      message.forEach(player::sendMessage);
+    if (!poll.canVote(player)) {
+      messageHandler.send(player, "poll.already-voted", poll);
+      return false;
     }
 
+    var options = poll.options();
+    if (!options.containsKey(option)) {
+      return false;
+    }
+
+    options.get(option).addVote();
+    poll.voters().add(player.getUniqueId());
+    return true;
+  }
+
+  public boolean expirePoll(Poll poll) {
+    if (poll.closed()) {
+      return false;
+    }
+
+    poll.setClosed(true);
+    pollRepository.deleteCached(poll);
+    pollRepository.deleteAsync(poll).whenComplete(($, error) -> {
+      if (error != null) {
+        plugin.getLogger().log(Level.SEVERE, "Unable to delete poll", error);
+      }
+    });
+
+    messageHandler.sendIn(Bukkit.getOnlinePlayers(), MessageMode.INFO, "poll.ended", poll);
     return true;
   }
 
   public void scheduleExpiration(Poll poll) {
-    Bukkit.getScheduler().runTaskLater(plugin, () -> expire(poll), poll.expireDate());
+    long delay = (poll.expireDate() - System.currentTimeMillis()) / 50;
+    Bukkit.getScheduler().runTaskLater(plugin, () -> expirePoll(poll), delay);
   }
 
-  public void vote(Poll poll, String option, Player player) {
-    if (poll.hasExpired()) {
-      messageHandler.send(player, "poll.already-ended");
-
-      return;
+  public List<String> getFormattedResults(Poll poll, Player viewer) {
+    if (poll.closed()) {
+      return null;
     }
 
-    if (!poll.canVote(player)) {
-      messageHandler.send(player, "poll.already-voted");
+    var options = poll.options();
+    int totalVotes = options.values().stream()
+      .mapToInt(Poll.Option::votes)
+      .sum();
 
-      return;
-    }
+    return options.int2ObjectEntrySet().stream()
+      .sorted((a, b) -> Integer.compare(b.getIntKey(), a.getIntKey()))
+      .map(Map.Entry::getValue)
+      .filter(option -> !Strings.isNullOrEmpty(option.value()))
+      .map(option -> {
+        int votes = option.votes();
+        float percentage = totalVotes == 0
+          ? 0f
+          : (float) (votes * 100) / totalVotes;
 
-    poll.options().computeInt(option, (k, v) -> v + 1);
-    poll.voters().add(player.getUniqueId());
+        return messageHandler.format(
+          viewer,
+          "poll.results-format",
+          ReplacePack.make(
+            "%option%", option.value(),
+            "%votes%", votes,
+            "%percentage%", percentage
+          ),
+          new Object[]{poll}
+        );
+      })
+      .toList();
   }
 
-  public void register(Poll poll) {
-    scheduleExpiration(poll);
-  }
-
-  public Poll get(String id) {
+  public Poll getPoll(String id) {
     return pollRepository.get(id);
   }
 
-  public List<Poll> polls() {
+  public List<Poll> getAllPolls() {
     return pollRepository.getAll();
   }
 
   @Override
   public @NotNull Iterator<Poll> iterator() {
     return pollRepository.getAll().iterator();
-  }
-
-  private record IntAndPercentage(int value,
-                                  float percentage) {
   }
 }

@@ -9,18 +9,79 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <properties>
-    <maven.compiler.source>24</maven.compiler.source>
-    <maven.compiler.target>24</maven.compiler.target>
+    <maven.compiler.source>21</maven.compiler.source>
+    <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <sigma.version>2.0.0-SNAPSHOT</sigma.version>
+    <rel>dev.emmily.polls.ext</rel>
   </properties>
 
   <build>
+    <finalName>polls</finalName>
     <resources>
       <resource>
         <directory>src/main/resources</directory>
+        <filtering>true</filtering>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+        </configuration>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <relocations>
+                <relocation>
+                  <pattern>javax.inject</pattern>
+                  <shadedPattern>${rel}.inject</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>me.fixeddev</pattern>
+                  <shadedPattern>${rel}.fixeddev</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>me.yushust</pattern>
+                  <shadedPattern>${rel}.yushust</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>dev.emmily.sigma</pattern>
+                  <shadedPattern>${rel}.sigma</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>net.kyori.text</pattern>
+                  <shadedPattern>${rel}.text</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.intellij</pattern>
+                  <shadedPattern>${rel}.intellij</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.jetbrains</pattern>
+                  <shadedPattern>${rel}.jetbrains</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.incendo</pattern>
+                  <shadedPattern>${rel}.incendo</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>net.wesjd</pattern>
+                  <shadedPattern>${rel}.incendo</shadedPattern>
+                </relocation>
+              </relocations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
   </build>
 
   <repositories>
@@ -42,7 +103,7 @@
     <dependency>
       <groupId>io.papermc.paper</groupId>
       <artifactId>paper-api</artifactId>
-      <version>1.21.5-R0.1-SNAPSHOT</version>
+      <version>1.21.4-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -75,6 +136,23 @@
       <artifactId>anvilgui</artifactId>
       <version>1.10.5-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>me.yushust.inject</groupId>
+      <artifactId>core</artifactId>
+      <version>0.4.6-20220616.213005-1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>RELEASE</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>5.17.0</version>
+      <scope>test</scope>
+    </dependency>
     <!-->
     The following dependencies are not available in any repository,
     must be manually installed to the local repository in order to
@@ -96,10 +174,14 @@
       <version>${sigma.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>RELEASE</version>
-      <scope>test</scope>
+      <groupId>dev.emmily</groupId>
+      <artifactId>sigma-platform-json</artifactId>
+      <version>${sigma.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.emmily</groupId>
+      <artifactId>sigma-platform-jdk</artifactId>
+      <version>${sigma.version}</version>
     </dependency>
   </dependencies>
 </project>

@@ -67,4 +67,8 @@ public interface Messages {
     }
     return result;
   }
+
+  static String strip(String plain) {
+    return MINI_MESSAGE.stripTags(plain);
+  }
 }

@@ -1,10 +1,8 @@
 package dev.emmily.polls.poll;
 
-import dev.emmily.polls.model.RecordModel;
 import dev.emmily.sigma.api.Model;
-import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -18,13 +16,19 @@ public final class Poll implements Model {
                         String issuer,
                         String question,
                         long expireDate) {
-    return new Poll(id, issuer, question, expireDate);
+    Poll poll = new Poll(id, issuer, question, expireDate);
+
+    for (int i = 0; i < 6; i++) {
+      poll.options.put(i, Poll.Option.empty(i));
+    }
+
+    return poll;
   }
 
   private final String id;
   private final String issuer;
   private final String question;
-  private final Object2IntMap<String> options;
+  private final Int2ObjectMap<Option> options;
   private final Set<UUID> voters;
   private final long creationDate;
   private final long expireDate;
@@ -41,7 +45,7 @@ public final class Poll implements Model {
   private Poll(String id,
                String issuer,
                String question,
-               Object2IntMap<String> options,
+               Int2ObjectMap<Option> options,
                Set<UUID> voters,
                long creationDate,
                long expireDate) {
@@ -59,7 +63,7 @@ public final class Poll implements Model {
                String question,
                long expireDate) {
     this(
-      id, issuer, question, new Object2IntOpenHashMap<>(6),
+      id, issuer, question, new Int2ObjectOpenHashMap<>(6),
       new HashSet<>(), System.currentTimeMillis(), expireDate
     );
   }
@@ -89,7 +93,7 @@ public final class Poll implements Model {
     return question;
   }
 
-  public Object2IntMap<String> options() {
+  public Int2ObjectMap<Option> options() {
     return options;
   }
 
@@ -109,9 +113,8 @@ public final class Poll implements Model {
     return closed;
   }
 
-  public Poll setClosed(boolean closed) {
+  public void setClosed(boolean closed) {
     this.closed = closed;
-    return this;
   }
 
   @Override
@@ -143,5 +146,65 @@ public final class Poll implements Model {
       "voters=" + voters + ", " +
       "creationDate=" + creationDate + ", " +
       "expireDate=" + expireDate + ']';
+  }
+
+  public static class Option {
+    public static Option of(int index, String value) {
+      return new Option(index, value);
+    }
+
+    public static Option empty(int index) {
+      return of(index, null);
+    }
+
+    private final int index;
+    private int votes;
+    private String value;
+
+    public Option(int index,
+                  String value) {
+      this.index = index;
+      this.value = value;
+    }
+
+    public int index() {
+      return index;
+    }
+
+    public int votes() {
+      return votes;
+    }
+
+    public Option addVote() {
+      ++votes;
+
+      return this;
+    }
+
+    public String value() {
+      return value;
+    }
+
+    public void setValue(String value) {
+      this.value = value;
+    }
+
+    @Override
+    public String toString() {
+      return value;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (o == null || getClass() != o.getClass()) return false;
+      Option option = (Option) o;
+      return index == option.index;
+    }
+
+    @Override
+    public int hashCode() {
+      return index;
+    }
+
   }
 }

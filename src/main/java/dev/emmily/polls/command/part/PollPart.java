@@ -9,6 +9,7 @@ import me.fixeddev.commandflow.part.ArgumentPart;
 import me.fixeddev.commandflow.part.CommandPart;
 import me.fixeddev.commandflow.stack.ArgumentStack;
 
+import javax.inject.Inject;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +19,7 @@ public class PollPart
   implements PartFactory {
   private final PollService pollService;
 
+  @Inject
   public PollPart(PollService pollService) {
     this.pollService = pollService;
   }
@@ -31,7 +33,7 @@ public class PollPart
                                 ArgumentStack stack,
                                 CommandPart caller) throws ArgumentParseException {
         String next = stack.next();
-        Poll poll = pollService.get(next);
+        Poll poll = pollService.getPoll(next);
 
         if (poll == null) {
           return Collections.emptyList();

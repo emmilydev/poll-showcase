@@ -1,0 +1,87 @@
+word:
+  yes: '<#a8dadc>Yes</#a8dadc>'
+  no: '<#e5989b>No</#e5989b>'
+  second:
+    single: ' second '
+    plural: ' seconds '
+    short: 's '
+  minute:
+    single: ' minute '
+    plural: ' minutes '
+    short: 'm '
+  hour:
+    single: ' hour '
+    plural: ' hours '
+    short: 'h '
+  day:
+    single: ' day '
+    plural: ' days '
+    short: 'd '
+  week:
+    single: ' week '
+    plural: ' weeks '
+    short: 'w '
+  month:
+    single: ' month '
+    plural: ' months '
+    short: 'mo '
+  year:
+    single: ' year '
+    plural: ' years '
+    short: 'y '
+poll:
+  invalid-date: '<#e5989b>⚠ Invalid date format provided.</#e5989b>'
+  empty: '<#f4a261>⚠ The poll content is empty. Skipping.</#f4a261>'
+  created: '<#a8dadc>✔ Poll successfully created.</#a8dadc>'
+  opened: '<#a8dadc>✔ A new poll has been created! Question: <#f7ede2>%poll_question%</#f7ede2></#a8dadc>.'
+  already-ended: '<#f6bd60>⚠ Poll <#f7ede2>%poll_id%</#f7ede2> has already ended.</#f6bd60>'
+  already-voted: '<#e5989b>⚠ You have already voted in this poll.</#e5989b>'
+  already-exists: '<#e5989b>⚠ The poll <#f7ede2>%poll%</#f7ede2> already exists.</#e5989b>'
+  ended: '<#a8dadc>✔ Poll <#f7ede2>%poll_id%</#f7ede2> has ended. Total votes: %poll_votes%</#a8dadc> <reset>%poll_results%'
+  results-format: '<#bcb8b1>%option%</#bcb8b1> <#d6ccc2>%votes%</#d6ccc2> (%percentage%%)'
+menu:
+  poll-admin:
+    title: '<bold><#99c1b9>Poll Admin - %poll_question%</#99c1b9></bold>'
+    default-value: '<#e5989b>Empty</#e5989b>'
+    item:
+      option:
+        name: 'Option: <bold><#f7ede2>%option%</#f7ede2></bold>'
+        lore:
+          - ''
+          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to edit</#d6ccc2></underlined>'
+          - ''
+      confirm:
+        name: '<bold><#a8dadc>✔ Confirm</#a8dadc></bold>'
+        lore:
+          - ''
+          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to confirm</#d6ccc2></underlined>'
+          - ''
+      cancel:
+        name: '<bold><#e5989b>✖ Cancel</#e5989b></bold>'
+        lore:
+          - ''
+          - '<#e5989b>Click</#e5989b> <underlined><#d6ccc2>to cancel</#d6ccc2></underlined>'
+          - ''
+  polls:
+    title: '<bold><#99c1b9>Polls</#99c1b9></bold>'
+    item:
+      poll:
+        name: '<bold><#f7ede2>Poll - %poll_question%</#f7ede2></bold>'
+        lore:
+          - ''
+          - '<#d6ccc2>Open:</#d6ccc2> <#a8dadc>%poll_open%</#a8dadc>'
+          - '<#d6ccc2>Expire date:</#d6ccc2> <#f4a261>%poll_expire_date%</#f4a261>'
+          - '<#d6ccc2>Creation date:</#d6ccc2> <#f6bd60>%poll_creation_date%</#f6bd60>'
+          - '<#d6ccc2>You voted:</#d6ccc2> %poll_player_voted%'
+          - ''
+          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to vote</#d6ccc2></underlined>'
+          - ''
+  poll-vote:
+    title: '<bold><#99c1b9>Poll vote - %poll_id%</#99c1b9></bold>'
+    item:
+      option:
+        name: '<bold><#f7ede2>%option%</#f7ede2></bold>'
+        lore:
+          - ''
+          - '<#a8dadc>Click</#a8dadc> <underlined><#d6ccc2>to vote for this option</#d6ccc2></underlined>'
+          - ''

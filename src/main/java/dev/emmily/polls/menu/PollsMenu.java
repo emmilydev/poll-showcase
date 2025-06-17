@@ -1,6 +1,7 @@
 package dev.emmily.polls.menu;
 
 import dev.emmily.polls.poll.PollService;
+import dev.emmily.polls.util.time.TimeFormatter;
 import me.yushust.message.MessageHandler;
 import me.yushust.message.util.ReplacePack;
 import org.bukkit.Material;
@@ -16,46 +17,51 @@ import org.incendo.interfaces.paper.element.ItemStackElement;
 import org.incendo.interfaces.paper.pane.ChestPane;
 import org.incendo.interfaces.paper.type.ChestInterface;
 
+import javax.inject.Inject;
 import java.util.List;
 
-public class PollsMenu
-  extends AbstractChestMenu {
+public class PollsMenu extends AbstractChestMenu {
   private final PollService pollService;
   private final PollVoteMenu pollVoteMenu;
+  private final TimeFormatter timeFormatter;
 
-  public PollsMenu(MessageHandler messageHandler,
-                   PollService pollService,
-                   PollVoteMenu pollVoteMenu) {
+  @Inject
+  public PollsMenu(
+    MessageHandler messageHandler,
+    PollService pollService,
+    PollVoteMenu pollVoteMenu,
+    TimeFormatter timeFormatter
+  ) {
     super("polls", messageHandler);
     this.pollService = pollService;
     this.pollVoteMenu = pollVoteMenu;
+    this.timeFormatter = timeFormatter;
   }
 
   public void open(Player player) {
     List<ItemStackElement<ChestPane>> pollElements = pollService
-      .polls()
+      .getAllPolls()
       .stream()
       .map(poll -> ItemStackElement.<ChestPane>of(
         item(
           player, "poll",
-          "%options%", poll.options().keySet(),
-          "%creation_date%", poll.creationDate() // TODO: format this
-        ).type(Material.PAPER).amount(1).build(),
+          ReplacePack.EMPTY, poll
+        ).type(Material.PAPER)
+          .amount(1)
+          .build(),
         context -> {
           context.status(ClickContext.ClickStatus.DENY);
-
           pollVoteMenu.open(player, poll);
         }
       ))
       .toList();
 
-    PaginatedTransform<
-      ItemStackElement<ChestPane>,
-      ChestPane, PlayerViewer> transform = new PaginatedTransform<>(
-      Vector2.at(1, 1),
-      Vector2.at(4, 7),
-      () -> pollElements
-    );
+    PaginatedTransform<ItemStackElement<ChestPane>, ChestPane, PlayerViewer> transform =
+      new PaginatedTransform<>(
+        Vector2.at(1, 1),
+        Vector2.at(4, 7),
+        () -> pollElements
+      );
 
     transform.backwardElement(
       Vector2.at(5, 0),
@@ -64,6 +70,7 @@ public class PollsMenu
         ClickHandler.cancel()
       )
     );
+
     transform.forwardElement(
       Vector2.at(5, 8),
       $ -> ItemStackElement.of(
@@ -81,12 +88,12 @@ public class PollsMenu
       .rows(6)
       .addTransform(transform)
       .build();
+
     menu.open(PlayerViewer.of(player));
   }
 
   private ItemStack createNavigator(Player player, boolean forward) {
     String element = (forward ? "next" : "previous") + "page";
-
     return item(player, element)
       .type(Material.ARROW)
       .amount(1)

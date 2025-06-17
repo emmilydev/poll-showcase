@@ -1,15 +1,18 @@
 package dev.emmily.polls.util.time;
 
-import dev.emmily.polls.PollsPlugin;
 import me.yushust.message.MessageHandler;
 import org.jetbrains.annotations.Nullable;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.OptionalLong;
 
+// stolen and adapted from MineAqua/MAPractice
+@Singleton
 public final class TimeFormatter {
 
   private static final Map<Character, ChronoUnit> DIGITS = new HashMap<>();
@@ -17,9 +20,6 @@ public final class TimeFormatter {
 
   private static final String HOUR_FORMAT = "%02d:%02d:%02d";
   private static final String MINUTE_FORMAT = "%02d:%02d";
-
-  private static final MessageHandler MESSAGE_HANDLER
-    = PollsPlugin.getPlugin(PollsPlugin.class).messageHandler();
 
   static {
     UNITS.put("year", ChronoUnit.YEARS);
@@ -38,10 +38,14 @@ public final class TimeFormatter {
     DIGITS.put('s', ChronoUnit.SECONDS);
   }
 
-  private TimeFormatter() {
+  private final MessageHandler messageHandler;
+
+  @Inject
+  public TimeFormatter(MessageHandler messageHandler) {
+    this.messageHandler = messageHandler;
   }
 
-  public static String formatNoWords(long millis) {
+  public String formatNoWords(long millis) {
     long seconds = millis / 1000L;
     if (seconds > 3600L) {
       return String.format(HOUR_FORMAT, seconds / 3600L, seconds % 3600L / 60L, seconds % 60L);
@@ -50,7 +54,7 @@ public final class TimeFormatter {
     }
   }
 
-  public static OptionalLong parse(String formattedTime) {
+  public OptionalLong parse(String formattedTime) {
     long parsed = 0;
     long parsing = 0;
     for (char c : formattedTime.toCharArray()) {
@@ -73,23 +77,23 @@ public final class TimeFormatter {
     return OptionalLong.of(parsed);
   }
 
-  public static String format(long millis) {
+  public String format(long millis) {
     return format(null, millis, true);
   }
 
-  public static String format(long millis, boolean complete) {
+  public String format(long millis, boolean complete) {
     return format(null, millis, complete);
   }
 
-  public static String format(@Nullable Object receiver, long millis) {
+  public String format(@Nullable Object receiver, long millis) {
     return format(receiver, millis, true);
   }
 
-  public static String format(@Nullable Object receiver, long millis, boolean complete) {
+  public String format(@Nullable Object receiver, long millis, boolean complete) {
 
     if (millis < 1000) {
       long secondTenths = millis / 10;
-      return "0." + secondTenths + " " + MESSAGE_HANDLER.get(receiver, "word.second.plural");
+      return "0." + secondTenths + " " + messageHandler.get(receiver, "word.second.plural");
     }
 
     StringBuilder timeBuilder = new StringBuilder();
@@ -103,11 +107,11 @@ public final class TimeFormatter {
         String basePath = "word." + unitName + ".";
         if (complete) {
           timeBuilder.append(
-            MESSAGE_HANDLER.get(receiver, basePath + (unitTime == 1 ? "single" : "plural"))
+            messageHandler.get(receiver, basePath + (unitTime == 1 ? "single" : "plural"))
           );
         } else {
           timeBuilder.append(
-            MESSAGE_HANDLER.get(receiver, basePath + "short")
+            messageHandler.get(receiver, basePath + "short")
           );
         }
       }
